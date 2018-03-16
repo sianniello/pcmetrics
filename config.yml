@@ -1,6 +1,6 @@
 ---
 host: 192.168.0.17
-port: 10883
+port: 80
 user: admin
-password: pu
+password: public
 interval: 5000
