@@ -1,0 +1,7 @@
+---
+mqtt_broker_url: mqtt://127.0.0.1
+host: ''
+port: ''
+username: ''
+password: ''
+interval: 2000
