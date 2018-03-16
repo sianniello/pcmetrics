@@ -1,7 +1,6 @@
 ---
-mqtt_broker_url: mqtt://127.0.0.1
-host: ''
-port: ''
-username: ''
-password: ''
-interval: 2000
+host: 192.168.0.17
+port: 10883
+user: admin
+password: pu
+interval: 5000

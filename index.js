@@ -5,11 +5,14 @@ const async = require('async');
 const readConfig = require('read-config');
 const config = readConfig('config.yml');
 
-
-let client_options = {
+let options = {
+    host: config.host,
+    port: config.port,
+    username: config.user,
+    password: config.password,
     clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8)
 };
-let client = mqtt.connect(config.mqtt_broker_url, client_options);
+let client = mqtt.connect(options);
 
 
 function getMetrics(client) {
@@ -18,16 +21,26 @@ function getMetrics(client) {
         //     si.mem(temp => { callback(null, temp); });
         // },
         system: callback => {
-            si.system(sys => { callback(null, sys); });
+            si.system(sys => {
+                callback(null, sys);
+            });
         },
         user: callback => {
-            si.users(usr => { callback(null, usr); });
+            si.users(usr => {
+                callback(null, usr);
+            });
         },
-        networkInterfaces: callback => {
-            si.networkInterfaces(net => { callback(null, net); });
-        },
+        // networkInterfaces: callback => {
+        //     si.networkInterfaces(net => {
+        //         callback(null, net);
+        //     });
+        // },
         load: callback => {
-            si.currentLoad(load => { callback(null, {current_load: Math.round(load.currentload)}); });
+            si.currentLoad(load => {
+                callback(null, {
+                    current_load: Math.round(load.currentload)
+                });
+            });
         }
     }, (err, data) => {
         client.publish('presence', JSON.stringify(data));
@@ -35,7 +48,7 @@ function getMetrics(client) {
 }
 
 client.on('connect', () => {
-    console.log("Client ID: " + client_options.clientId);
+    console.log('Client ID: ' + client.options.clientId)
     client.subscribe('presence');
     setInterval(() => {
         getMetrics(client);
@@ -45,4 +58,9 @@ client.on('connect', () => {
 client.on('message', (topic, message) => {
     // message is Buffer
     console.log(message.toString());
+});
+
+client.on('error', (err) => {
+    console.error("Error: " + err);
+    client.end();
 });

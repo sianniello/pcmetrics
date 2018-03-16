@@ -2,3 +2,5 @@
 package-lock.json
 index.exe
 *.7z
+/.vscode
+*.yml
